@@ -1,0 +1,17 @@
+# 运行时数据：项目/任务元数据、日志、实例信息
+data/
+
+# 依赖与构建产物
+node_modules/
+dist/
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+
+# 本地覆盖
+node-path.txt

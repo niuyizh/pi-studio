@@ -1177,7 +1177,6 @@
         cursor: pointer; font-size: 16px; line-height: 1; padding: 4px 8px; border-radius: 8px;
       }
       .demo-banner .db-close:hover { opacity: 1; background: rgba(255,255,255,.16); }
-      @media (max-width: 720px) { .demo-banner .db-hide-sm { display: none; } }
     `;
     document.head.appendChild(style);
 
@@ -1185,10 +1184,8 @@
     bar.className = "demo-banner";
     bar.innerHTML =
       '<span class="db-tag">演示</span>' +
-      '<span>这是<b>预置数据回放</b>，不会真的调用模型</span>' +
-      '<span class="db-hide-sm" style="opacity:.75">· 界面、搜索、配色切换都是真的</span>' +
-      '<span class="db-hide-sm">·</span>' +
-      '<a href="' + REPO + '#快速开始" target="_blank" rel="noopener">想用真功能 → 本地运行</a>' +
+      '<span>数据为预置内容，不会调用模型</span>' +
+      '<a href="' + REPO + '#使用" target="_blank" rel="noopener">本地运行 →</a>' +
       '<button class="db-close" title="隐藏提示">✕</button>';
     document.body.appendChild(bar);
     bar.querySelector(".db-close").onclick = () => {

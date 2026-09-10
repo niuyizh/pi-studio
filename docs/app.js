@@ -284,10 +284,12 @@ function renderCodeBlock(lang, code) {
   </div>`;
 }
 
-/* -------------------------------- api ----------------------------------- */
-const NOSTREAM =
-  new URLSearchParams(location.search).has("nostream") ||
-  new URLSearchParams(location.search).has("shot"); // 调试/截图用：不建立 SSE 长连接
+/* ------------------------------- api ----------------------------------- */
+const QS = new URLSearchParams(location.search);
+const NOSTREAM = QS.has("nostream") || QS.has("shot"); // 调试/截图用：不建立 SSE 长连接
+// 演示模式：托管在 GitHub Pages 上，或显式加 ?demo
+const DEMO_WANTED =
+  /\.github\.io$/i.test(location.hostname) || QS.has("demo") || QS.has("autoplay");
 
 async function api(method, path, body) {
   const res = await fetch(path, {
@@ -2757,6 +2759,14 @@ document.addEventListener("auxclick", (e) => {
    Init
    ========================================================================= */
 async function init() {
+  // 演示模式下先装上假后端（接管 fetch / EventSource），界面代码完全不用改
+  if (DEMO_WANTED && !window.PiStudioDemo) {
+    try {
+      await import("./demo.js");
+    } catch (err) {
+      console.warn("演示数据加载失败，回退到真实后端", err);
+    }
+  }
   applyTheme(currentTheme(), currentAccent());
   initSidebarResize();
   buildComposer();

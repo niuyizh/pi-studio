@@ -25,7 +25,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const APP_DIR = __dirname;
 const DATA_DIR = path.join(APP_DIR, "data");
 const TRASH_DIR = path.join(DATA_DIR, "trash");
-const PUBLIC_DIR = path.join(APP_DIR, "public");
+const PUBLIC_DIR = path.join(APP_DIR, "docs");
 
 const HOME = os.homedir();
 const AGENT_DIR = path.join(HOME, ".pi", "agent");

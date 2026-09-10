@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/logo.svg" width="96" alt="Pi Studio" />
+<img src="docs/assets/logo.svg" width="96" alt="Pi Studio" />
 
 # Pi Studio
 
@@ -10,9 +10,17 @@
 
 浅色 / 深色 · 6 套配色 · 项目分文件夹 · 跨会话全文搜索 · 难度与 token 花销可见
 
-![Pi Studio 界面](docs/screenshot.png)
+<br />
 
-<sub>浅色主题 · 紫青配色</sub>
+### 🎮 [**点此在线试玩演示版 →**](https://niuyizh.github.io/pi-studio/)
+
+不用安装任何东西。演示站用**预置数据回放真实的流式输出、思考过程和工具调用**（不会真的调模型）。
+
+[![在线演示](docs/assets/demo.png)](https://niuyizh.github.io/pi-studio/)
+
+![Pi Studio 界面](docs/assets/screenshot.png)
+
+<sub>真实版本的样子（浅色主题 · 紫青配色）</sub>
 
 </div>
 
@@ -36,7 +44,7 @@
 
 | 深色 | 浅绿 |
 | --- | --- |
-| ![深色主题](docs/screenshot-dark.png) | ![浅绿配色](docs/screenshot-mint.png) |
+| ![深色主题](docs/assets/screenshot-dark.png) | ![浅绿配色](docs/assets/screenshot-mint.png) |
 
 </div>
 
@@ -53,8 +61,11 @@
 
 ## 快速开始
 
+先想看看长什么样？[**在线演示版**](https://niuyizh.github.io/pi-studio/) 不需要安装任何东西。
+想要真的能干活，就在本地跑：
+
 ```bash
-git clone https://github.com/<你的用户名>/pi-studio.git
+git clone https://github.com/niuyizh/pi-studio.git
 cd pi-studio
 ```
 
@@ -177,11 +188,12 @@ node server.mjs --port 4400
 ```
 pi-studio/
 ├─ server.mjs          # HTTP + SSE 服务、JSON API、pi RPC 子进程管理
-├─ public/
+├─ docs/               # 前端目录（同时是 GitHub Pages 的站点根目录）
 │  ├─ index.html
 │  ├─ style.css        # 全部样式（含 6 套配色的 CSS 变量）
-│  └─ app.js           # 渲染、Markdown、SSE、搜索、查找等全部前端逻辑
-├─ docs/               # README 里的截图和 logo
+│  ├─ app.js           # 渲染、Markdown、SSE、搜索、查找等全部前端逻辑
+│  ├─ demo.js          # 演示模式：接管 fetch / EventSource，回放预置数据
+│  └─ assets/          # README 用的截图和 logo
 ├─ icon.ico
 ├─ start-hidden.vbs    # Windows 后台静默启动
 ├─ start-debug.bat     # Windows 前台启动（看日志）
@@ -196,6 +208,38 @@ pi-studio/
 3. 会话列表、全文搜索直接读 `~/.pi/agent/sessions/**/*.jsonl`，不另建数据库。
 
 调试小工具：`?nostream` 或 `?shot=dark.mint` 会跳过 SSE 长连接（方便做页面快照）。
+
+## 在线演示版是怎么做的
+
+Pi Studio 本身**无法只靠静态托管运行** —— 它需要后端进程去调用 `pi`、读写文件、执行命令。
+把这样的服务开放到公网，等于把你的 API Key 和一个任意命令执行 shell 交给全网，非常危险。
+
+所以仓库里的 `docs/` 既是真前端，也能当静态演示站：
+
+- `docs/demo.js` 在演示模式下接管 `window.fetch`（拦下所有 `/api/*`）和 `window.EventSource`，
+  返回预置数据并用脚本回放「流式文本 + 思考 + 工具调用 + 结果」。
+- 因此 `docs/app.js`（真正的界面代码）**一行都不用改**，真版本和演示版共用同一套 UI。
+- 演示模式只在 `*.github.io` 或加了 `?demo` / `?autoplay` 时启用，本地跑真版本时零开销。
+
+### 开启 GitHub Pages
+
+`docs/` 已经是站点根目录，无需任何构建：
+
+1. 仓库 **Settings → Pages**
+2. **Source** 选 `Deploy from a branch`
+3. **Branch** 选 `main`，文件夹选 `/docs`，保存
+
+等一分钟即可访问 `https://<用户名>.github.io/pi-studio/`。
+
+### URL 参数
+
+| 参数 | 作用 |
+| --- | --- |
+| `?demo` | 强制进入演示模式（本地调试用） |
+| `?autoplay` | 演示模式 + 打开后自动跑一遍对话 |
+| `?noautoplay` | 演示模式但不自动播放 |
+| `?shot=dark.mint` | 临时指定外观，不写入本地设置（截图用） |
+| `?nostream` | 不建立 SSE 长连接（调试用） |
 
 ## License
 
